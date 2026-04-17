@@ -655,6 +655,51 @@ const grassControls = {
   bladeHeight: 1.0,
   bladeWidth: 0.14,
 };
+
+function exportTransform(object, name = 'model') {
+  if (!object) {
+    console.warn(`exportTransform: "${name}" is not available yet.`);
+    return '';
+  }
+
+  const p = object.position;
+  const r = object.rotation;
+  const s = object.scale;
+  const snippet = `// ===== COPY THIS INTO YOUR SOURCE CODE =====
+
+${name}.position.set(${p.x.toFixed(3)}, ${p.y.toFixed(3)}, ${p.z.toFixed(3)});
+${name}.rotation.set(${r.x.toFixed(3)}, ${r.y.toFixed(3)}, ${r.z.toFixed(3)});
+${name}.scale.set(${s.x.toFixed(3)}, ${s.y.toFixed(3)}, ${s.z.toFixed(3)});`;
+
+  console.log(snippet);
+  return snippet;
+}
+
+function saveAndExportTransform(object, name, saveTransform) {
+  if (!object) {
+    console.warn(`saveAndExportTransform: "${name}" is not available yet.`);
+    return '';
+  }
+
+  if (typeof saveTransform === 'function') {
+    saveTransform();
+  }
+
+  return exportTransform(object, name);
+}
+
+function exposeTransformTarget(name, object) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  window[name] = object;
+}
+
+if (typeof window !== 'undefined') {
+  window.exportTransform = exportTransform;
+}
+
 const houseControls = {
   posX: 0,
   posY: 0,
@@ -662,13 +707,7 @@ const houseControls = {
   rotY: houseFacingRotationY,
   scale: 1,
   log() {
-    saveHouseTransformToStorage();
-    const snippet = `const houseSavedTransform = {
-  position: { x: ${houseWrapper ? houseWrapper.position.x.toFixed(4) : 0}, y: ${houseWrapper ? houseWrapper.position.y.toFixed(4) : 0}, z: ${houseWrapper ? houseWrapper.position.z.toFixed(4) : 0} },
-  rotationY: ${houseWrapper ? houseWrapper.rotation.y.toFixed(4) : houseFacingRotationY.toFixed(4)},
-  scale: ${houseWrapper ? houseWrapper.scale.x.toFixed(4) : 1},
-};`;
-    console.log('Paste this into house-detail.js to save the house permanently:\n' + snippet);
+    return saveAndExportTransform(houseWrapper, 'houseWrapper', saveHouseTransformToStorage);
   },
 };
 const housePartControllers = [];
@@ -735,16 +774,7 @@ const pvControls = {
   rotZ: 0,
   scale: 1,
   log() {
-    if (!pvModelRef) {
-      return;
-    }
-    savePvTransformToStorage();
-    const snippet = `const pvSavedTransform = {
-  position: { x: ${pvModelRef.position.x.toFixed(4)}, y: ${pvModelRef.position.y.toFixed(4)}, z: ${pvModelRef.position.z.toFixed(4)} },
-  rotation: { x: ${pvModelRef.rotation.x.toFixed(4)}, y: ${pvModelRef.rotation.y.toFixed(4)}, z: ${pvModelRef.rotation.z.toFixed(4)} },
-  scale: ${pvModelRef.scale.x.toFixed(4)},
-};`;
-    console.log('Paste this into house-detail.js to save permanently:\n' + snippet);
+    return saveAndExportTransform(pvModelRef, 'pvModelRef', savePvTransformToStorage);
   },
 };
 const treeControls = {
@@ -753,15 +783,7 @@ const treeControls = {
   posZ: 0,
   scale: 1,
   log() {
-    if (!treeModelRef) {
-      return;
-    }
-    saveTreeTransformToStorage();
-    const snippet = `const treeSavedTransform = {
-  position: { x: ${treeModelRef.position.x.toFixed(4)}, y: ${treeModelRef.position.y.toFixed(4)}, z: ${treeModelRef.position.z.toFixed(4)} },
-  scale: ${treeModelRef.scale.x.toFixed(4)},
-};`;
-    console.log('Paste this into house-detail.js to save the tree permanently:\n' + snippet);
+    return saveAndExportTransform(treeModelRef, 'treeModelRef', saveTreeTransformToStorage);
   },
 };
 const tree2Controls = {
@@ -771,16 +793,7 @@ const tree2Controls = {
   rotY: 0,
   scale: 1,
   log() {
-    if (!treeModelRef2) {
-      return;
-    }
-    saveTree2TransformToStorage();
-    const snippet = `const tree2SavedTransform = {
-  position: { x: ${treeModelRef2.position.x.toFixed(4)}, y: ${treeModelRef2.position.y.toFixed(4)}, z: ${treeModelRef2.position.z.toFixed(4)} },
-  rotationY: ${treeModelRef2.rotation.y.toFixed(4)},
-  scale: ${treeModelRef2.scale.x.toFixed(4)},
-};`;
-    console.log('Paste this into house-detail.js to save tree 2 permanently:\n' + snippet);
+    return saveAndExportTransform(treeModelRef2, 'treeModelRef2', saveTree2TransformToStorage);
   },
 };
 const tree3Controls = {
@@ -792,18 +805,7 @@ const tree3Controls = {
   leafColor: '#d8eead',
   leafOpacity: 0.82,
   log() {
-    if (!treeModelRef3) {
-      return;
-    }
-    saveTree3TransformToStorage();
-    const snippet = `const tree3SavedTransform = {
-  position: { x: ${treeModelRef3.position.x.toFixed(4)}, y: ${treeModelRef3.position.y.toFixed(4)}, z: ${treeModelRef3.position.z.toFixed(4)} },
-  rotationY: ${treeModelRef3.rotation.y.toFixed(4)},
-  scale: ${treeModelRef3.scale.x.toFixed(4)},
-  leafColor: '${tree3Controls.leafColor}',
-  leafOpacity: ${tree3Controls.leafOpacity.toFixed(4)},
-};`;
-    console.log('Paste this into house-detail.js to save tree 3 permanently:\n' + snippet);
+    return saveAndExportTransform(treeModelRef3, 'treeModelRef3', saveTree3TransformToStorage);
   },
 };
 const tree4Controls = {
@@ -813,16 +815,7 @@ const tree4Controls = {
   rotY: 0,
   scale: 1,
   log() {
-    if (!treeModelRef4) {
-      return;
-    }
-    saveTree4TransformToStorage();
-    const snippet = `const tree4SavedTransform = {
-  position: { x: ${treeModelRef4.position.x.toFixed(4)}, y: ${treeModelRef4.position.y.toFixed(4)}, z: ${treeModelRef4.position.z.toFixed(4)} },
-  rotationY: ${treeModelRef4.rotation.y.toFixed(4)},
-  scale: ${treeModelRef4.scale.x.toFixed(4)},
-};`;
-    console.log('Paste this into house-detail.js to save tree 4 permanently:\n' + snippet);
+    return saveAndExportTransform(treeModelRef4, 'treeModelRef4', saveTree4TransformToStorage);
   },
 };
 const palmControls = {
@@ -832,16 +825,7 @@ const palmControls = {
   rotY: 0,
   scale: 1,
   log() {
-    if (!palmModelRef) {
-      return;
-    }
-    savePalmTransformToStorage();
-    const snippet = `const palmSavedTransform = {
-  position: { x: ${palmModelRef.position.x.toFixed(4)}, y: ${palmModelRef.position.y.toFixed(4)}, z: ${palmModelRef.position.z.toFixed(4)} },
-  rotationY: ${palmModelRef.rotation.y.toFixed(4)},
-  scale: ${palmModelRef.scale.x.toFixed(4)},
-};`;
-    console.log('Paste this into house-detail.js to save the palm permanently:\n' + snippet);
+    return saveAndExportTransform(palmModelRef, 'palmModelRef', savePalmTransformToStorage);
   },
 };
 const palm2Controls = {
@@ -851,16 +835,7 @@ const palm2Controls = {
   rotY: 0,
   scale: 1,
   log() {
-    if (!palmModelRef2) {
-      return;
-    }
-    savePalm2TransformToStorage();
-    const snippet = `const palm2SavedTransform = {
-  position: { x: ${palmModelRef2.position.x.toFixed(4)}, y: ${palmModelRef2.position.y.toFixed(4)}, z: ${palmModelRef2.position.z.toFixed(4)} },
-  rotationY: ${palmModelRef2.rotation.y.toFixed(4)},
-  scale: ${palmModelRef2.scale.x.toFixed(4)},
-};`;
-    console.log('Paste this into house-detail.js to save palm 2 permanently:\n' + snippet);
+    return saveAndExportTransform(palmModelRef2, 'palmModelRef2', savePalm2TransformToStorage);
   },
 };
 
@@ -2584,7 +2559,7 @@ function setupHouseGui() {
       updateHouseAnchors();
       saveHouseTransformToStorage();
     });
-    houseFolder.add(houseControls, 'log').name('Log Transform');
+    houseFolder.add(houseControls, 'log').name('Save Transform');
     houseGuiBound = true;
   }
 
@@ -2631,7 +2606,7 @@ function setupPvGui() {
       pvModelRef.scale.setScalar(value);
       savePvTransformToStorage();
     });
-    pvFolder.add(pvControls, 'log').name('Log Transform');
+    pvFolder.add(pvControls, 'log').name('Save Transform');
     pvGuiBound = true;
   }
 
@@ -2666,7 +2641,7 @@ function setupTreeGui() {
       treeModelRef.scale.setScalar(value);
       saveTreeTransformToStorage();
     });
-    treeFolder.add(treeControls, 'log').name('Log Transform');
+    treeFolder.add(treeControls, 'log').name('Save Transform');
     treeGuiBound = true;
   }
 
@@ -2705,7 +2680,7 @@ function setupPalmGui() {
       palmModelRef.scale.setScalar(value);
       savePalmTransformToStorage();
     });
-    palmFolder.add(palmControls, 'log').name('Log Transform');
+    palmFolder.add(palmControls, 'log').name('Save Transform');
     palmGuiBound = true;
   }
 
@@ -2744,7 +2719,7 @@ function setupPalm2Gui() {
       palmModelRef2.scale.setScalar(value);
       savePalm2TransformToStorage();
     });
-    palm2Folder.add(palm2Controls, 'log').name('Log Transform');
+    palm2Folder.add(palm2Controls, 'log').name('Save Transform');
     palm2GuiBound = true;
   }
 
@@ -2793,7 +2768,7 @@ function setupTree3Gui() {
       applyTree3LeafOverlay();
       saveTree3TransformToStorage();
     });
-    tree3Folder.add(tree3Controls, 'log').name('Log Transform');
+    tree3Folder.add(tree3Controls, 'log').name('Save Transform');
     tree3GuiBound = true;
   }
 
@@ -2832,7 +2807,7 @@ function setupTree4Gui() {
       treeModelRef4.scale.setScalar(value);
       saveTree4TransformToStorage();
     });
-    tree4Folder.add(tree4Controls, 'log').name('Log Transform');
+    tree4Folder.add(tree4Controls, 'log').name('Save Transform');
     tree4GuiBound = true;
   }
 
@@ -2871,7 +2846,7 @@ function setupTree2Gui() {
       treeModelRef2.scale.setScalar(value);
       saveTree2TransformToStorage();
     });
-    tree2Folder.add(tree2Controls, 'log').name('Log Transform');
+    tree2Folder.add(tree2Controls, 'log').name('Save Transform');
     tree2GuiBound = true;
   }
 
@@ -3439,12 +3414,14 @@ function finalizeDetailTreeModel(treeModel) {
   });
 
   treeModelRef = treeModel;
+  exposeTransformTarget('treeModelRef', treeModelRef);
   houseRoot.add(treeModel);
   treePositioned = false;
   tryPositionTreeModel();
   applySavedTreeTransform();
   treeModelRef2 = treeModel.clone(true);
   treeModelRef2.name = 'detailTreeModelClone';
+  exposeTransformTarget('treeModelRef2', treeModelRef2);
   tree2Positioned = false;
   houseRoot.add(treeModelRef2);
   tryPositionTreeModel2();
@@ -3582,8 +3559,10 @@ loader.load(
     });
 
     houseModelRef = model;
+    exposeTransformTarget('houseModelRef', houseModelRef);
     houseWrapper = new THREE.Group();
     houseWrapper.name = 'houseWrapper';
+    exposeTransformTarget('houseWrapper', houseWrapper);
     houseWrapper.rotation.y = houseFacingRotationY;
     houseWrapper.add(model);
     houseRoot.add(houseWrapper);
@@ -3769,6 +3748,7 @@ if (isHouseDetailPage) {
       });
 
       pvModelRef = pvModel;
+      exposeTransformTarget('pvModelRef', pvModelRef);
       houseRoot.add(pvModel);
       tryPositionPvModel();
       applySavedPvTransform();
@@ -3868,6 +3848,7 @@ if (isHouseDetailPage) {
       });
 
       treeModelRef3 = treeModel;
+      exposeTransformTarget('treeModelRef3', treeModelRef3);
       houseRoot.add(treeModel);
       tree3Positioned = false;
       tryPositionTreeModel3();
@@ -3875,6 +3856,7 @@ if (isHouseDetailPage) {
       applyTree3LeafOverlay();
       treeModelRef4 = treeModel.clone(true);
       treeModelRef4.name = 'detailTreeModel4';
+      exposeTransformTarget('treeModelRef4', treeModelRef4);
       tree4Positioned = false;
       houseRoot.add(treeModelRef4);
       tryPositionTreeModel4();
@@ -3933,6 +3915,7 @@ if (isHouseDetailPage) {
       });
 
       palmModelRef = palmModel;
+      exposeTransformTarget('palmModelRef', palmModelRef);
       houseRoot.add(palmModel);
       palmPositioned = false;
       tryPositionPalmModel();
@@ -3940,6 +3923,7 @@ if (isHouseDetailPage) {
       palmAccentLight = attachPalmAccentLight(palmModelRef, false);
       palmModelRef2 = palmModel.clone(true);
       palmModelRef2.name = 'detailPalmModelClone';
+      exposeTransformTarget('palmModelRef2', palmModelRef2);
       palm2Positioned = false;
       houseRoot.add(palmModelRef2);
       tryPositionPalmModel2();

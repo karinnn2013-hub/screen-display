@@ -19,26 +19,74 @@
         font-family: "Inter", "Segoe UI", sans-serif;
       }
 
+      .font-title {
+        font-family: "Heiti SC", "STHeiti", "PingFang SC", "Noto Sans SC", sans-serif;
+      }
+
+      .font-body {
+        font-family: "Inter", "Segoe UI", sans-serif;
+      }
+
       canvas {
         display: block;
       }
 
-      .back-link {
+      .glass-panel {
+        height: 48px;
+        padding: 0 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: rgba(255, 255, 255, 0.96);
+        font-size: 14px;
+        box-shadow:
+          0 4px 20px rgba(0,0,0,0.15),
+          inset 0 1px 1px rgba(255,255,255,0.25);
+        transition: background 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+      }
+
+      .glass-panel:hover {
+        background: rgba(255,255,255,0.22);
+      }
+
+      .top-left {
         position: fixed;
-        top: 18px;
-        left: 18px;
+        top: 20px;
+        left: 20px;
         z-index: 20;
-        padding: 10px 14px;
+      }
+
+      .top-right {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 20;
+      }
+
+      .container-top {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        z-index: 20;
+      }
+
+      .back-link {
+        font-family: "Inter", "Segoe UI", sans-serif;
         color: rgba(228, 241, 255, 0.92);
         text-decoration: none;
-        font-size: 11px;
+        font-size: 13px;
         letter-spacing: 0.16em;
         text-transform: uppercase;
-        background: rgba(9, 18, 32, 0.58);
-        border: 1px solid rgba(128, 177, 232, 0.22);
-        border-radius: 999px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 0 18px rgba(76, 148, 235, 0.12);
+        white-space: nowrap;
       }
 
       .detail-label {
@@ -54,44 +102,466 @@
         pointer-events: none;
       }
 
-      .mode-toggle {
-        position: fixed;
-        top: 18px;
-        right: 18px;
-        z-index: 20;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 8px 12px;
-        color: rgba(228, 241, 255, 0.92);
-        font-size: 11px;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-        background: rgba(9, 18, 32, 0.58);
-        border: 1px solid rgba(128, 177, 232, 0.22);
-        border-radius: 999px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 0 18px rgba(76, 148, 235, 0.12);
-      }
-
-      .mode-toggle button {
-        appearance: none;
-        border: 0;
-        background: rgba(120, 170, 220, 0.18);
-        color: inherit;
-        border-radius: 999px;
-        padding: 6px 10px;
-        font: inherit;
-        letter-spacing: inherit;
-        text-transform: inherit;
-        cursor: pointer;
-      }
-
       .dg.ac {
         top: 50% !important;
         right: 18px !important;
         bottom: auto !important;
         transform: translateY(-50%);
+      }
+
+      .mode-switcher {
+        gap: 10px;
+        padding: 0 10px;
+      }
+
+      .mode-switcher button {
+        border: 0;
+        outline: 0;
+        background: transparent;
+        border-radius: 999px;
+        height: 34px;
+        padding: 0 14px;
+        font: 500 14px/1.2 "Helvetica Neue", Arial, sans-serif;
+        color: rgba(255,255,255,0.62);
+        cursor: pointer;
+        transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .time-container {
+        position: fixed;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 20;
+      }
+
+      .time-panel {
+        width: 100%;
+        box-sizing: border-box;
+        height: 48px;
+        padding: 0 18px;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .time-panel-labels {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-width: 88px;
+        line-height: 1.05;
+      }
+
+      .time-panel-title {
+        color: rgba(255,255,255,0.86);
+        font: 500 11px/1.1 "Helvetica Neue", Arial, sans-serif;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .time-panel-value {
+        margin-top: 2px;
+        color: rgba(255,255,255,0.62);
+        font: 500 11px/1.1 "Helvetica Neue", Arial, sans-serif;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .time-of-day-slider {
+        flex: 1;
+        min-width: 0;
+        margin: 0;
+      }
+
+      .dashboard-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 16;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.45s ease;
+      }
+
+      .dashboard-overlay.visible {
+        opacity: 1;
+      }
+
+      .dashboard-overlay.visible .dashboard-card,
+      .dashboard-overlay.visible .dashboard-hero {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .glass-card {
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        background: rgba(255,255,255,0.2);
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,0.25);
+        box-shadow:
+          0 8px 30px rgba(0,0,0,0.15),
+          inset 0 1px 1px rgba(255,255,255,0.3);
+        padding: 20px;
+        color: rgba(25, 34, 45, 0.92);
+        transform: translateZ(0);
+        transition: transform 0.2s ease, background 0.2s ease;
+      }
+
+      .glass-card:hover {
+        transform: translateY(-4px);
+        background: rgba(255,255,255,0.24);
+      }
+
+      .dashboard-hero,
+      .dashboard-card {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+      }
+
+      .dashboard-stage {
+        position: absolute;
+        inset: 0;
+        padding: 110px 34px 34px;
+        display: grid;
+        grid-template-columns: minmax(260px, 320px) 1fr minmax(280px, 330px);
+        grid-template-rows: auto 1fr auto;
+        gap: 24px 28px;
+        box-sizing: border-box;
+      }
+
+      .dashboard-hero {
+        grid-column: 1;
+        grid-row: 1;
+        align-self: start;
+        max-width: 320px;
+        padding: 8px 4px;
+        transition-delay: 0.1s;
+        position: relative;
+      }
+
+      .dashboard-kicker {
+        font-family: "Inter", "Segoe UI", sans-serif;
+        font-size: 14px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.96);
+        margin-bottom: 0;
+        text-shadow: 0 0 18px rgba(196, 229, 255, 0.42);
+      }
+
+      .dashboard-hero h1 {
+        margin: 0;
+        font: 600 56px/0.92 "Heiti SC", "STHeiti", "PingFang SC", "Noto Sans SC", sans-serif;
+        letter-spacing: -0.04em;
+        color: rgba(255, 255, 255, 0.98);
+        text-shadow:
+          0 0 24px rgba(172, 215, 255, 0.34),
+          0 0 44px rgba(172, 215, 255, 0.18);
+      }
+
+      .dashboard-hero p {
+        margin: 18px 0 0;
+        max-width: 250px;
+        font: 400 16px/1.45 "Inter", "Segoe UI", sans-serif;
+        color: rgba(255, 255, 255, 0.92);
+        text-shadow:
+          0 0 18px rgba(190, 224, 255, 0.28),
+          0 0 34px rgba(190, 224, 255, 0.16);
+      }
+
+      .dashboard-hero-glow {
+        position: absolute;
+        inset: -26px -32px -18px -18px;
+        background:
+          radial-gradient(circle at 28% 30%, rgba(188, 224, 255, 0.26), rgba(188, 224, 255, 0) 54%),
+          radial-gradient(circle at 38% 68%, rgba(196, 232, 255, 0.18), rgba(196, 232, 255, 0) 58%);
+        filter: blur(28px);
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .dashboard-hero > *:not(.dashboard-hero-glow) {
+        position: relative;
+        z-index: 1;
+      }
+
+      .dashboard-right {
+        grid-column: 3;
+        grid-row: 1 / span 2;
+        align-self: start;
+        justify-self: end;
+        width: 100%;
+        max-width: 320px;
+        transition-delay: 0.2s;
+      }
+
+      .dashboard-card-title {
+        font: 600 14px/1.2 "Heiti SC", "STHeiti", "PingFang SC", "Noto Sans SC", sans-serif;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(30, 40, 56, 0.58);
+      }
+
+      .dashboard-weather-top {
+        margin-top: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .dashboard-weather-main {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .weather-icon {
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle at 35% 35%, rgba(255,255,255,0.95), rgba(255,208,102,0.95) 35%, rgba(255,173,66,0.72) 70%, rgba(255,255,255,0) 72%);
+        box-shadow: 0 0 30px rgba(255,195,94,0.28);
+        flex: 0 0 auto;
+      }
+
+      .dashboard-weather-temp {
+        font: 600 38px/1 "Heiti SC", "STHeiti", "PingFang SC", "Noto Sans SC", sans-serif;
+        color: rgba(20, 30, 44, 0.92);
+      }
+
+      .dashboard-weather-meta {
+        margin-top: 4px;
+        font: 400 13px/1.5 "Inter", "Segoe UI", sans-serif;
+        color: rgba(31, 42, 55, 0.66);
+      }
+
+      .dashboard-weather-grid {
+        margin-top: 16px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px 14px;
+      }
+
+      .dashboard-weather-item {
+        display: grid;
+        gap: 3px;
+      }
+
+      .dashboard-weather-item span {
+        font: 500 11px/1.2 "Inter", "Segoe UI", sans-serif;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(30, 40, 56, 0.52);
+      }
+
+      .dashboard-weather-item strong {
+        font: 600 16px/1.2 "Heiti SC", "STHeiti", "PingFang SC", "Noto Sans SC", sans-serif;
+        color: rgba(20, 30, 44, 0.9);
+      }
+
+      .dashboard-micro-chart {
+        margin-top: 22px;
+        width: 100%;
+        height: 120px;
+        display: block;
+      }
+
+      .dashboard-floating {
+        grid-column: 1;
+        grid-row: 2;
+        align-self: center;
+        justify-self: start;
+        width: 190px;
+        transition-delay: 0.28s;
+      }
+
+      .dashboard-floating-value {
+        margin-top: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .dashboard-floating-number {
+        font: 600 40px/1 "Heiti SC", "STHeiti", "PingFang SC", "Noto Sans SC", sans-serif;
+        color: rgba(18, 28, 39, 0.92);
+      }
+
+      .dashboard-activity-subtitle {
+        margin-top: 10px;
+        font: 400 13px/1.4 "Inter", "Segoe UI", sans-serif;
+        color: rgba(31, 42, 55, 0.66);
+      }
+
+      .dashboard-pulse-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(134, 255, 191, 0.95) 0%, rgba(76, 209, 140, 0.92) 55%, rgba(76, 209, 140, 0.18) 100%);
+        box-shadow: 0 0 0 0 rgba(76, 209, 140, 0.32);
+        animation: dashboardPulse 2.2s ease-in-out infinite;
+      }
+
+      @keyframes dashboardPulse {
+        0% { box-shadow: 0 0 0 0 rgba(76, 209, 140, 0.28); transform: scale(1); }
+        70% { box-shadow: 0 0 0 14px rgba(76, 209, 140, 0); transform: scale(1.08); }
+        100% { box-shadow: 0 0 0 0 rgba(76, 209, 140, 0); transform: scale(1); }
+      }
+
+      .dashboard-bottom {
+        grid-column: 1 / span 3;
+        grid-row: 3;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 18px;
+        align-self: end;
+      }
+
+      .dashboard-bottom .dashboard-card:nth-child(1) { transition-delay: 0.22s; }
+      .dashboard-bottom .dashboard-card:nth-child(2) { transition-delay: 0.3s; }
+      .dashboard-bottom .dashboard-card:nth-child(3) { transition-delay: 0.38s; }
+      .dashboard-bottom .dashboard-card:nth-child(4) { transition-delay: 0.46s; }
+
+      .dashboard-stat-row {
+        margin-top: 14px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .dashboard-stat {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font: 500 13px/1.2 "Inter", "Segoe UI", sans-serif;
+        color: rgba(29, 39, 53, 0.72);
+      }
+
+      .dashboard-stat strong {
+        font-family: "Heiti SC", "STHeiti", "PingFang SC", "Noto Sans SC", sans-serif;
+        color: rgba(18, 28, 39, 0.92);
+      }
+
+      .dashboard-bars {
+        margin-top: 18px;
+        height: 92px;
+        display: flex;
+        align-items: end;
+        gap: 12px;
+      }
+
+      .dashboard-bar {
+        flex: 1;
+        border-radius: 12px 12px 6px 6px;
+        background: linear-gradient(180deg, rgba(122, 216, 255, 0.96), rgba(152, 255, 199, 0.86));
+        box-shadow: inset 0 1px 1px rgba(255,255,255,0.35);
+      }
+
+      .dashboard-balance-chart {
+        margin-top: 14px;
+        width: 100%;
+        height: 110px;
+        display: block;
+      }
+
+      .dashboard-earning-value {
+        margin-top: 22px;
+        font: 600 42px/1 "Heiti SC", "STHeiti", "PingFang SC", "Noto Sans SC", sans-serif;
+        color: rgba(18, 28, 39, 0.92);
+      }
+
+      .dashboard-earning-date {
+        margin-top: 10px;
+        font: 500 13px/1.2 "Inter", "Segoe UI", sans-serif;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(30, 40, 56, 0.58);
+      }
+
+      .dashboard-gauge {
+        margin-top: 10px;
+        width: 100%;
+        height: 128px;
+        display: block;
+      }
+
+      .dashboard-gauge-value {
+        margin-top: -78px;
+        text-align: center;
+        font: 600 30px/1 "Heiti SC", "STHeiti", "PingFang SC", "Noto Sans SC", sans-serif;
+        color: rgba(18, 28, 39, 0.92);
+      }
+
+      .dashboard-gauge-label {
+        margin-top: 6px;
+        text-align: center;
+        font: 500 12px/1.2 "Inter", "Segoe UI", sans-serif;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(30, 40, 56, 0.58);
+      }
+
+      .dashboard-efficiency-meter {
+        margin-top: 18px;
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.32);
+        overflow: hidden;
+      }
+
+      .dashboard-efficiency-fill {
+        height: 100%;
+        width: 86%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, rgba(118, 214, 255, 0.92), rgba(154, 255, 200, 0.95));
+        box-shadow: inset 0 1px 1px rgba(255,255,255,0.28);
+      }
+
+      .dashboard-operation {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 168px;
+        pointer-events: none;
+        opacity: 0;
+        transform: translate(-50%, -100%);
+        transition: opacity 0.35s ease, transform 0.35s ease;
+        padding: 14px 16px;
+      }
+
+      .dashboard-operation .dashboard-card-title {
+        font-size: 12px;
+      }
+
+      .dashboard-operation .dashboard-stat-row {
+        margin-top: 10px;
+        gap: 6px;
+      }
+
+      .dashboard-operation .dashboard-stat {
+        font-size: 11px;
+      }
+
+      .dashboard-operation .dashboard-stat strong {
+        font-size: 12px;
+      }
+
+      .dashboard-overlay.visible .dashboard-operation {
+        opacity: 1;
+      }
+
+      .dashboard-controls-muted {
+        opacity: 0.2;
+        transform: translateY(-4px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+
+      .dashboard-controls-live {
+        opacity: 1;
+        transform: none;
+        transition: opacity 0.3s ease, transform 0.3s ease;
       }
     </style>
     <script type="importmap">
@@ -105,12 +575,135 @@
   </head>
   <body class="house-detail-page">
     <div id="root"></div>
-    <a class="back-link" href="./index.html">Back To City</a>
-    <div class="mode-toggle">
-      <span id="mode-label">Night</span>
-      <button id="mode-button" type="button">Switch Mode</button>
-    </div>
+    <a class="back-link glass-panel top-left" href="./index.html">Back To City</a>
     <div class="detail-label">House Detail View</div>
+    <section id="dashboard-overlay" class="dashboard-overlay" aria-hidden="true">
+      <div class="dashboard-stage">
+        <div class="dashboard-hero">
+          <div class="dashboard-hero-glow" aria-hidden="true"></div>
+          <h1>Solar Power<br />Management</h1>
+          <p>Optimize energy, track performance, maximize solar efficiency</p>
+        </div>
+
+        <div class="dashboard-right glass-card dashboard-card">
+          <div class="dashboard-card-title">Environment</div>
+          <div class="dashboard-weather-top">
+            <div class="dashboard-weather-main">
+              <div class="weather-icon"></div>
+              <div>
+                <div id="dashboard-weather-temp" class="dashboard-weather-temp">13°C</div>
+                <div id="dashboard-weather-condition" class="dashboard-weather-meta">Clear sky</div>
+              </div>
+            </div>
+          </div>
+          <div class="dashboard-weather-grid">
+            <div class="dashboard-weather-item">
+              <span>Temperature</span>
+              <strong id="dashboard-weather-temp-secondary">12.8°C</strong>
+            </div>
+            <div class="dashboard-weather-item">
+              <span>Wind</span>
+              <strong id="dashboard-weather-wind">6.2 m/s</strong>
+            </div>
+            <div class="dashboard-weather-item">
+              <span>Weather</span>
+              <strong id="dashboard-weather-condition-secondary">Clear sky</strong>
+            </div>
+            <div class="dashboard-weather-item">
+              <span>Solar Intensity</span>
+              <strong id="dashboard-solar-intensity">82%</strong>
+            </div>
+          </div>
+          <svg class="dashboard-micro-chart" viewBox="0 0 300 120" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="weatherLine" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="rgba(126, 216, 255, 0.18)"/>
+                <stop offset="60%" stop-color="rgba(102, 211, 255, 0.86)"/>
+                <stop offset="100%" stop-color="rgba(156, 255, 198, 0.96)"/>
+              </linearGradient>
+            </defs>
+            <path id="dashboard-weather-path" d="M0,92 C30,88 48,62 74,58 C102,54 126,82 151,74 C181,65 191,31 220,28 C248,25 265,49 300,36"
+              fill="none" stroke="url(#weatherLine)" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <div class="dashboard-floating glass-card dashboard-card">
+          <div class="dashboard-card-title">Human Flow</div>
+          <div class="dashboard-floating-value">
+            <div id="dashboard-transducer-value" class="dashboard-floating-number">562</div>
+            <div class="dashboard-pulse-dot" aria-hidden="true"></div>
+          </div>
+          <div class="dashboard-activity-subtitle">Active movement detected</div>
+        </div>
+
+        <div class="dashboard-bottom">
+          <div class="glass-card dashboard-card">
+            <div class="dashboard-card-title">Current Power</div>
+            <div class="dashboard-stat-row">
+              <div class="dashboard-stat"><span>Sun Output</span><strong id="dashboard-solar-value">4.23 kW</strong></div>
+              <div class="dashboard-stat"><span>System Baseline</span><strong id="dashboard-reference-value">4.07 kW</strong></div>
+              <div class="dashboard-stat"><span>Consumption</span><strong id="dashboard-consumed-value">265 kW</strong></div>
+            </div>
+            <div class="dashboard-bars" aria-hidden="true">
+              <div id="dashboard-bar-solar" class="dashboard-bar" style="height: 68%;"></div>
+              <div id="dashboard-bar-reference" class="dashboard-bar" style="height: 72%;"></div>
+              <div id="dashboard-bar-consumed" class="dashboard-bar" style="height: 94%;"></div>
+            </div>
+          </div>
+
+          <div class="glass-card dashboard-card">
+            <div class="dashboard-card-title">Energy Flow</div>
+            <svg class="dashboard-balance-chart" viewBox="0 0 260 110" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="balanceStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="rgba(130, 217, 255, 0.24)"/>
+                  <stop offset="50%" stop-color="rgba(102, 212, 255, 0.92)"/>
+                  <stop offset="100%" stop-color="rgba(156, 255, 198, 0.96)"/>
+                </linearGradient>
+              </defs>
+              <path id="dashboard-balance-path" d="M0,82 C24,86 46,52 70,58 C93,64 107,96 130,84 C154,71 166,23 190,26 C214,30 230,54 260,40"
+                fill="none" stroke="url(#balanceStroke)" stroke-width="5" stroke-linecap="round"/>
+            </svg>
+            <div class="dashboard-stat-row">
+              <div class="dashboard-stat"><span>Input</span><strong id="dashboard-received-value">2.48 kW</strong></div>
+              <div class="dashboard-stat"><span>Usage</span><strong id="dashboard-cost-value">3.52 kW</strong></div>
+            </div>
+          </div>
+
+          <div class="glass-card dashboard-card">
+            <div class="dashboard-card-title">System Efficiency</div>
+            <div id="dashboard-earning-value" class="dashboard-earning-value">86%</div>
+            <div id="dashboard-earning-date" class="dashboard-earning-date">Real-time performance ratio</div>
+            <div class="dashboard-efficiency-meter"><div id="dashboard-efficiency-fill" class="dashboard-efficiency-fill"></div></div>
+          </div>
+
+          <div class="glass-card dashboard-card">
+            <div class="dashboard-card-title">Total Output</div>
+            <svg class="dashboard-gauge" viewBox="0 0 220 128" preserveAspectRatio="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="gaugeArc" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="rgba(128, 216, 255, 0.76)"/>
+                  <stop offset="60%" stop-color="rgba(102, 211, 255, 0.96)"/>
+                  <stop offset="100%" stop-color="rgba(156, 255, 198, 0.92)"/>
+                </linearGradient>
+              </defs>
+              <path d="M20,108 A90,90 0 0 1 200,108" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="16" stroke-linecap="round"/>
+              <path id="dashboard-gauge-arc" d="M20,108 A90,90 0 0 1 176,38" fill="none" stroke="url(#gaugeArc)" stroke-width="16" stroke-linecap="round"/>
+            </svg>
+            <div id="dashboard-total-energy-value" class="dashboard-gauge-value">306 kW</div>
+            <div class="dashboard-gauge-label">Current capacity usage</div>
+          </div>
+        </div>
+      </div>
+      <div id="dashboard-operation-panel" class="dashboard-operation glass-card dashboard-card">
+        <div class="dashboard-card-title">Operation Status</div>
+        <div class="dashboard-stat-row">
+          <div class="dashboard-stat"><span>Cleaning</span><strong id="dashboard-operation-cleaning">ACTIVE</strong></div>
+          <div class="dashboard-stat"><span>Coverage</span><strong id="dashboard-operation-coverage">72%</strong></div>
+          <div class="dashboard-stat"><span>Mode</span><strong id="dashboard-operation-mode">Autonomous</strong></div>
+        </div>
+      </div>
+    </section>
     <script src="https://cdn.jsdelivr.net/npm/dat.gui@0.7.9/build/dat.gui.min.js"></script>
     <script type="module" src="./house-detail.js"></script>
   </body>
